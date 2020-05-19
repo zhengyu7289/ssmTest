@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context-3.2.xsd
+          http://www.springframework.org/schema/mvc
+          http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+	<!-- 自动注册SpringMVC所需的所有驱动 -->
+
+	<mvc:annotation-driven>
+
+		<!-- 消息转换器,解决responseBody返回中外乱码问题 -->
+
+		<mvc:message-converters register-defaults="true">
+
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+
+				<property name="supportedMediaTypes" value="text/html;charset=UTF-8" />
+
+			</bean>
+
+		</mvc:message-converters>
+
+	</mvc:annotation-driven>
+
+	<!-- spring的配置 -->
+	<context:component-scan base-package="com.mhys" />
+	
+	<!-- 加载配置文件 -->
+	<context:property-placeholder location="classpath:*.properties"/>
+	<!-- 数据源 -->
+	<bean id="dataSource"  class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	<!-- 整合数据库和java -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- mapper和resultmap配置路径 -->
+		<property name="mapperLocations">
+			<list>
+				<!-- 表示在包或以下所有目录中，以.xml结尾所有文件 -->
+				<value>classpath:mapper/*.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 扫描mapper.java -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.mhys.mapper" />
+	</bean>
+
+
+</beans>

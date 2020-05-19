@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhys.mapper.UserMapper">
+  <select id="findAll" resultType="com.mhys.model.User">
+      select * from user
+  </select>
+    <select id="findByName" parameterType="com.mhys.model.User"  resultType="com.mhys.model.User">
+        select * from user where 1=1
+        <if test="#{username!=null and username!=''}">
+        and  username like '%${username}%'
+        </if>
+    </select>
+    <delete id="delByid" parameterType="java.lang.Integer">
+        delete  from user where id=#{id}
+    </delete>
+    <select id="findByNames" parameterType="com.mhys.model.User" resultType="com.mhys.model.User">
+        select id,username,password from user where 1=1
+        <if test="#{username!=null and username!=''}">
+            and username like '%${username}%'
+        </if>
+    </select>
+    <insert id="insertUser" parameterType="com.mhys.model.User">
+        insert into user(username,password) values(#{username},#{password})
+    </insert>
+    <select id="selectByID" parameterType="com.mhys.model.User" resultType="com.mhys.model.User">
+        select * from user where id=#{id}
+    </select>
+    <update id="updateById" parameterType="com.mhys.model.User">
+        update user set username=#{username},password=#{password} where id=#{id}
+    </update>
+</mapper>
